@@ -33,12 +33,12 @@ if ( ! class_exists( 'Today_Migration_Meta' ) ) {
 				$count
 			);
 
-			for ( $posts as $post ) {
+			foreach ( $posts as $post ) {
 				$this->convert_meta( $post );
-				$this->progress.tick();
+				$this->progress->tick();
 			}
 
-			$this->progress.finish();
+			$this->progress->finish();
 
 			WP_CLI::success( "Covnerted post meta for $count posts." );
 		}

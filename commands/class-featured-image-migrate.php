@@ -31,12 +31,12 @@ if ( ! class_exists( 'Today_Migration_Featured_Image' ) ) {
 				$count
 			);
 
-			for ( $posts as $post ) {
+			foreach ( $posts as $post ) {
 				$this->convert_featured_image( $post );
-				$this->progress.tick();
+				$this->progress->tick();
 			}
 
-			$this->progress.finish();
+			$this->progress->finish();
 			WP_CLI::success( "Converted $this->converted featured images out of $count processed posts." );
 		}
 

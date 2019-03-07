@@ -1,6 +1,6 @@
 <?php
 /**
- * Migrates featured story images to a custom meta field
+ * Converts CSS Classes in the old theme to newer classes.
  */
 if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 	class Today_Migration_CSS_Classes {
@@ -12,11 +12,11 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 			$converted;
 
 		/**
-		 * Converts featured images to a custom meta field.
+		 * Converts CSS Classes in the old theme to newer classes.
 		 *
 		 * ## EXAMPLES
 		 *
-		 *     wp today migrate featured
+		 *     wp today migrate classes
 		 *
 		 * @when after_wp_load
 		 */
@@ -33,12 +33,12 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 				$count
 			);
 
-			for ( $posts as $post ) {
+			foreach ( $posts as $post ) {
 				$this->update_generic_classes( $post );
-				$this->progress.tick();
+				$this->progress->tick();
 			}
 
-			$this->progress.finish();
+			$this->progress->finish();
 			WP_CLI::success( "Updated CSS classes within $this->converted posts out of $count processed posts." );
 		}
 
@@ -49,11 +49,9 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 		private function update_generic_classes( $post ) {
 			$post_content = $post->post_content;
 
-			for ( $this->generic_updates as $old_val => $new_val ) {
+			foreach ( $this->generic_updates as $old_val => $new_val ) {
 				$class_escaped = preg_quote( $old_val );
 				$pattern = "class=\".*?$class_escaped.*?\"";
-
-				var_dump( $pattern );
 
 				$post_content = preg_replace( $old_val, $new_val, $post_content );
 
@@ -68,5 +66,5 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 		}
 	}
 
-	WP_CLI::add_command( 'today migrate featured', 'Today_Migration_Featured_Image' );
+	WP_CLI::add_command( 'today migrate classes', 'Today_Migration_CSS_Classes' );
 }
