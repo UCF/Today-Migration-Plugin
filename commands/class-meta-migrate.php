@@ -40,7 +40,7 @@ if ( ! class_exists( 'Today_Migration_Meta' ) ) {
 
 			$this->progress->finish();
 
-			WP_CLI::success( "Covnerted post meta for $count posts." );
+			WP_CLI::success( "Converted post meta for $count posts." );
 		}
 
 		/**

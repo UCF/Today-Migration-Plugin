@@ -43,8 +43,8 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 		}
 
 		/**
-		 * Helper function that converts the featured_image
-		 * to a meta field
+		 * Helper function that converts CSS Classes
+		 * to their updated equivilents in the new theme
 		 */
 		private function update_generic_classes( $post ) {
 			$post_content = $post->post_content;
