@@ -51,9 +51,10 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 
 			foreach ( $this->generic_updates as $old_val => $new_val ) {
 				$class_escaped = preg_quote( $old_val );
-				$pattern = "class=\".*?$class_escaped.*?\"";
+				$replacement   = 'class="$1' . $new_val . '$2"';
+				$pattern       = "/class=\"(.*)?$class_escaped(.*)?\"/i";
 
-				$post_content = preg_replace( $old_val, $new_val, $post_content );
+				$post_content = preg_replace( $old_val, $replacement, $post_content );
 
 				if ( $post->post_content !== $post_content ) {
 					$this->converted++;
