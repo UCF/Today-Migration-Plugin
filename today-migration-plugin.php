@@ -15,4 +15,5 @@ if ( ! defined( 'WPINC' ) ) {
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once dirname( __FILE__ ) . '/commands/class-meta-migrate.php';
 	require_once dirname( __FILE__ ) . '/commands/class-featured-image-migrate.php';
+	require_once dirname( __FILE__ ) . '/commands/class-css-class-migrate.php';
 }
