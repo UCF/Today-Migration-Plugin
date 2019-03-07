@@ -5,11 +5,11 @@
 if ( ! class_exists( 'Today_Migration_All' ) ) {
 	class Today_Migration_All {
 		/**
-		 * Converts CSS Classes in the old theme to newer classes.
+		 * Runs all the migrate commands
 		 *
 		 * ## EXAMPLES
 		 *
-		 *     wp today migrate classes
+		 *     wp today migrate all
 		 *
 		 * @when after_wp_load
 		 */
