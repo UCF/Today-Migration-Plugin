@@ -14,10 +14,14 @@ Provides a series of wp cli tasks for manipulating data used by the old Today-Bo
 
 Provides a series of wp cli tasks for manipulating data used by the old Today-Bootstrap theme to work with the new theme and associated plugins.
 
+=== Commands ===
 
-== Documentation ==
-
-Head over to the [Today Migration Plugin wiki](https://github.com/UCF/Today-Migration-Plugin/wiki) for detailed information about this plugin, installation instructions, and more.
+* `wp today migrate meta`
+    * Converts post_meta keys from the ones used on the old Today site to the keys used in the new site.
+* `wp today migrate featured`
+    * Copies the featured image id of each post to a custom post_meta field.
+* `wp today migrate classes`
+    * Performs a simple regex search/replace using an array of CSS Classes to update old classes to ones available in Athena.
 
 
 == Changelog ==
