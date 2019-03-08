@@ -2,7 +2,7 @@
 Contributors: ucfwebcom
 Requires at least: 4.9.7
 Tested up to: 4.9.7
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 Requires PHP: 5.4
 License: GPLv3 or later
 License URI: http://www.gnu.org/copyleft/gpl-3.0.html
@@ -27,6 +27,10 @@ Provides a series of wp cli tasks for manipulating data used by the old Today-Bo
 
 
 == Changelog ==
+
+= 1.0.1 =
+Bug Fixes:
+* Removed WPINC check as this will be false when using this as a wp cli package.
 
 = 1.0.0 =
 * Initial release

@@ -1,5 +1,6 @@
 {
   "name": "UCF/Today-Migration-Plugin",
+  "version": "1.0.1",
   "description": "Provides commands for migrating UCF Today from the old theme.",
   "type": "wp-cli-package",
   "homepage": "https://github.com/UCF/Today-Migration-Plugin",

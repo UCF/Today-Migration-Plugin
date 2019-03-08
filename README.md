@@ -21,6 +21,10 @@ Provides a series of wp cli tasks for manipulating data used by the old Today-Bo
 
 ## Changelog ##
 
+### 1.0.1 ###
+Bug Fixes:
+* Removed WPINC check as this will be false when using this as a wp cli package.
+
 ### 1.0.0 ###
 * Initial release
 
