@@ -7,7 +7,15 @@ if ( ! class_exists( 'Today_Migration_Meta' ) ) {
 	class Today_Migration_Meta {
 		private
 			$mapping = array(
-				'old-meta-key' => 'new-meta-key'
+				'updated_date'  => 'post_header_updated_date',
+				'subtitle'      => 'post_header_subtitle',
+				'deck'          => 'post_header_deck',
+				'author_title'  => 'post_author_title',
+				'author_byline' => 'post_author_byline',
+				'author_bio'    => 'post_author_bio',
+				'source'        => 'post_source',
+				'primary_tag'   => 'post_primary_tag',
+				'video_url'     => 'post_header_video_url'
 			),
 			$progress;
 

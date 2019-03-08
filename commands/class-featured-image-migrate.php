@@ -5,7 +5,7 @@
 if ( ! class_exists( 'Today_Migration_Featured_Image' ) ) {
 	class Today_Migration_Featured_Image {
 		private
-			$custom_meta_field = 'the-new-custom-meta-field',
+			$custom_meta_field = 'post_header_image',
 			$progress,
 			$converted;
 
