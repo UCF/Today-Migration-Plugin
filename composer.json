@@ -2,13 +2,13 @@
   "name": "wp-cli/today-migrate",
   "description": "Provides commands for migrating UCF Today from the old theme.",
   "type": "wp-cli-package",
-  "homepage": "https://github.com/wp-cli/Today-Migration-Plugin",
+  "homepage": "https://github.com/UCF/Today-Migration-Plugin",
   "license": "MIT",
   "authors": [
     {
       "name": "UCF Web Communications",
       "email": "webcom@ucf.edu",
-      "homepage": "https://github.cm/UCF"
+      "homepage": "https://github.com/UCF"
     }
   ],
   "require": {
