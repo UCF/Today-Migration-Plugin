@@ -54,6 +54,12 @@ n/a
 ### Composer Installation ###
 1. Install using `wp package install git@github.com:UCF/Today-Migration-Plugin.git` or `wp package install https://github.com/UCF/Today-Migration-Plugin.git`.
 
+Note: If you get a `WP-CLI ran out of memory` error when trying to install, you can either increase the `memory_limit` parameter in your `php.ini` file, or you can run the following command for a temporary workaround:
+
+```
+php -d memory_limit=512M "$(which wp)" package install git@github.com:UCF/Today-Migration-Plugin.git
+```
+
 ### Other Notes ###
 * This plugin's README.md file is automatically generated. Please only make modifications to the README.txt file, and make sure the `gulp readme` command has been run before committing README changes.  See the [contributing guidelines](https://github.com/UCF/Today-Migration-Plugin/blob/master/CONTRIBUTING.md) for more information.
 
