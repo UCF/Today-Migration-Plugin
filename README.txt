@@ -22,6 +22,8 @@ Provides a series of wp cli tasks for manipulating data used by the old Today-Bo
     * Copies the featured image id of each post to a custom post_meta field.
 * `wp today migrate classes`
     * Performs a simple regex search/replace using an array of CSS Classes to update old classes to ones available in Athena.
+* `wp today migrate all`
+    * Runs the above three commands in sequence.
 
 
 == Changelog ==
