@@ -6,6 +6,7 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 	class Today_Migration_CSS_Classes {
 		private
 			$generic_updates = array(
+				// Translations for Athena compatibility
 				'float-left' => '',
 				'float-right' => '',
 				'alignleft' => 'float-left',
@@ -17,7 +18,10 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 				'wp-image-' => 'img-fluid wp-image-',
 				'img-responsive' => 'img-fluid',
 				'img-circle' => 'rounded-circle',
+				'container' => '',
+				'media' => '',
 
+				// Junk classes
 				'external' => '',
 				's1' => '',
 				'MsoNormal' => '',
@@ -30,7 +34,6 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 				'dropcap2' => '',
 				'main-video' => '',
 				'main-interior' => '',
-				'container' => '',
 				'p1' => '',
 				'first-p' => '',
 				'bodytext' => '',
@@ -49,7 +52,6 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 				'docs' => '',
 				'wp-menu-arrow' => '',
 				'interest-add' => '',
-				'media' => '',
 				'media-element-container' => '',
 				'media--view-mode--three_by_four_hundred' => '',
 				'watch-the-video' => ''
@@ -67,9 +69,11 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 		 * @when after_wp_load
 		 */
 		public function __invoke( $args ) {
+			// Fetch posts of all post types.
+			// Make sure revisions are excluded.
 			$posts = get_posts( array(
 				'posts_per_page' => -1,
-				'post_status'    => 'any'
+				'post_status'    => array( 'publish', 'pending', 'draft', 'future', 'private' )
 			) );
 
 			$count = count( $posts );
