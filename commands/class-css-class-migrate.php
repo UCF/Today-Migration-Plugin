@@ -75,6 +75,7 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 			// Fetch posts of all post types.
 			// Make sure revisions are excluded.
 			$posts = get_posts( array(
+				'post_type'      => 'all',
 				'posts_per_page' => -1,
 				'post_status'    => array( 'publish', 'pending', 'draft', 'future', 'private' )
 			) );
