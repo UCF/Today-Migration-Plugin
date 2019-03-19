@@ -104,7 +104,7 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 				$replacement   = 'class="$1' . $new_val . '$2"';
 				$pattern       = "/class=\"(.*)?$class_escaped(.*)?\"/i";
 
-				$post_content = preg_replace( $old_val, $replacement, $post_content );
+				$post_content = preg_replace( $pattern, $replacement, $post_content );
 
 				if ( $post->post_content !== $post_content ) {
 					$this->converted++;
