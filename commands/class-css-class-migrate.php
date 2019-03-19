@@ -15,7 +15,6 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 				'alignnone' => '',
 				'pull-left' => 'float-left',
 				'pull-right' => 'float-right',
-				'wp-image-' => 'img-fluid wp-image-',
 				'img-responsive' => 'img-fluid',
 				'img-circle' => 'rounded-circle',
 				'container' => '',
@@ -56,6 +55,10 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 				'media--view-mode--three_by_four_hundred' => '',
 				'watch-the-video' => ''
 			),
+			$regex_updates = array(
+				// Translations for Athena compatibility
+				'wp-image-' => 'img-fluid wp-image-'
+			),
 			$progress,
 			$converted;
 
@@ -94,26 +97,35 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 
 		/**
 		 * Helper function that converts CSS Classes
-		 * to their updated equivilents in the new theme
+		 * to their updated equivalents in the new theme
 		 */
 		private function update_generic_classes( $post ) {
 			$post_content = $post->post_content;
 
 			foreach ( $this->generic_updates as $old_val => $new_val ) {
-				$class_escaped = preg_quote( $old_val );
-				$replacement   = 'class="$1' . $new_val . '$2"';
-				$pattern       = "/class=\"(.*)?$class_escaped(.*)?\"/i";
+				$post_content = $this->update_class( preg_quote( $old_val ), $new_val, $post_content );
+			}
 
-				$post_content = preg_replace( $pattern, $replacement, $post_content );
+			foreach ( $this->$regex_updates as $old_val => $new_val ) {
+				// Assume values in $regex_updates are regex-safe
+				$post_content = $this->update_class( $old_val, $new_val, $post_content );
+			}
 
-				if ( $post->post_content !== $post_content ) {
-					$this->converted++;
-				}
-
+			if ( $post->post_content !== $post_content ) {
+				$this->converted++;
 				$post->post_content = $post_content;
-
 				wp_update_post( $post );
 			}
+		}
+
+		/**
+		 * Performs string replacement of a single class within
+		 * all class attributes in the given $string.
+		 */
+		private function update_class( $old, $new, $string ) {
+			$pattern     = "/class=\"(.*)?$old(.*)?\"/i";
+			$replacement = 'class="$1' . $new . '$2"';
+			return preg_replace( $pattern, $replacement, $string );
 		}
 	}
 
