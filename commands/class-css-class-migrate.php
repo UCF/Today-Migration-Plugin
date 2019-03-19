@@ -6,6 +6,43 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 	class Today_Migration_CSS_Classes {
 		private
 			$generic_updates = array(
+				'media--view-mode--three_by_four_hundred' => '',
+				'media-element-container' => '',
+				'media' => '',
+				'container' => '',
+				'column' => '',
+				'colum' => '',
+				'uBlogsy_post_container' => '',
+				'uBlogsy_post_date' => '',
+				'uBlogsy_post' => '',
+				'uBlogsy_bottom_border' => '',
+				'first-p' => '',
+				'first' => '',
+				'bodytext' => '',
+				'Body' => '',
+
+				'_2cuy' => '',
+				'_3dgx' => '',
+				'_2vxa' => '',
+				'apple-converted-space' => '',
+				'article-content' => '',
+				'border' => '',
+				'docs' => '',
+				'dropcap2' => '',
+				'external' => '',
+				'hiddenSpellError' => '',
+				'interest-add' => '',
+				'large' => '',
+				'main-video' => '',
+				'main-interior' => '',
+				'MsoNormal' => '',
+				'p1' => '',
+				's1' => '',
+				'story-left' => '',
+				'title' => '',
+				'watch-the-video' => '',
+				'wp-menu-arrow' => '',
+
 				// Translations for Athena compatibility
 				'float-left' => '',
 				'float-right' => '',
@@ -16,48 +53,11 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 				'pull-left' => 'float-left',
 				'pull-right' => 'float-right',
 				'img-responsive' => 'img-fluid',
-				'img-circle' => 'rounded-circle',
-				'container' => '',
-				'media' => '',
-
-				// Junk classes
-				'external' => '',
-				's1' => '',
-				'MsoNormal' => '',
-				'column' => '',
-				'first' => '',
-				'border' => '',
-				'hiddenSpellError' => '',
-				'apple-converted-space' => '',
-				'large' => '',
-				'dropcap2' => '',
-				'main-video' => '',
-				'main-interior' => '',
-				'p1' => '',
-				'first-p' => '',
-				'bodytext' => '',
-				'Body' => '',
-				'_2cuy' => '',
-				'_3dgx' => '',
-				'_2vxa' => '',
-				'uBlogsy_post_container' => '',
-				'uBlogsy_post' => '',
-				'uBlogsy_bottom_border' => '',
-				'uBlogsy_post_date' => '',
-				'title' => '',
-				'story-left' => '',
-				'article-content' => '',
-				'colum' => '',
-				'docs' => '',
-				'wp-menu-arrow' => '',
-				'interest-add' => '',
-				'media-element-container' => '',
-				'media--view-mode--three_by_four_hundred' => '',
-				'watch-the-video' => ''
+				'img-circle' => 'rounded-circle'
 			),
 			$regex_updates = array(
 				// Translations for Athena compatibility
-				'wp-image-' => 'img-fluid wp-image-'
+				'wp-image-(?P<wpimgid>[0-9a-zA-Z]+)' => 'callback_wp_img_class'
 			),
 			$progress,
 			$converted;
@@ -88,7 +88,7 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 			);
 
 			foreach ( $posts as $post ) {
-				$this->update_generic_classes( $post );
+				$this->update_classes( $post );
 				$this->progress->tick();
 			}
 
@@ -100,14 +100,14 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 		 * Helper function that converts CSS Classes
 		 * to their updated equivalents in the new theme
 		 */
-		private function update_generic_classes( $post ) {
+		private function update_classes( $post ) {
 			$post_content = $post->post_content;
 
 			foreach ( $this->generic_updates as $old_val => $new_val ) {
 				$post_content = $this->update_class( preg_quote( $old_val ), $new_val, $post_content );
 			}
 
-			foreach ( $this->$regex_updates as $old_val => $new_val ) {
+			foreach ( $this->regex_updates as $old_val => $new_val ) {
 				// Assume values in $regex_updates are regex-safe
 				$post_content = $this->update_class( $old_val, $new_val, $post_content );
 			}
@@ -125,9 +125,22 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 		 */
 		private function update_class( $old, $new, $string ) {
 			// Backreferences: $1=<quote>, $2=<before>, $3=<after>
-			$pattern     = "class=(?P<quote>\'|\")(?P<before>(?:[^(?P=quote)]+[ ])?(?:[ ]*)?)$old(?P<after>(?:[ ]*)?(?:[ ][^(?P=quote)]+)?)(?P=quote)/i";
-			$replacement = 'class=$1$2' . $new . '$3$1';
-			return preg_replace( $pattern, $replacement, $string );
+			$pattern = "/class=(?P<quote>\'|\")(?P<before>(?:[^(?P=quote)]+[ ])?(?:[ ]*)?)$old(?P<after>(?:[ ]*)?(?:[ ][^(?P=quote)]+)?)(?P=quote)/i";
+
+			if ( method_exists( $this, $new ) ) {
+				return preg_replace_callback( $pattern, array( $this, $new ), $string );
+			}
+			else {
+				$replacement = 'class=$1$2' . $new . '$3$1';
+				return preg_replace( $pattern, $replacement, $string );
+			}
+		}
+
+		/**
+		 * Custom callback function for updating 'wp-image-*' classes
+		 */
+		static function callback_wp_img_class( $matches ) {
+			return 'class=' . $matches['quote'] . $matches['before'] . 'img-fluid wp-image-' . $matches['wpimgid'] . $matches['after'] . $matches['quote'];
 		}
 	}
 
