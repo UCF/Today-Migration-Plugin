@@ -123,8 +123,9 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 		 * all class attributes in the given $string.
 		 */
 		private function update_class( $old, $new, $string ) {
-			$pattern     = "/class=\"(.*)?$old(.*)?\"/i";
-			$replacement = 'class="$1' . $new . '$2"';
+			// Backreferences: $1=<quote>, $2=<before>, $3=<after>
+			$pattern     = "class=(?P<quote>\'|\")(?P<before>(?:[^(?P=quote)]+[ ])?(?:[ ]*)?)$old(?P<after>(?:[ ]*)?(?:[ ][^(?P=quote)]+)?)(?P=quote)/i";
+			$replacement = 'class=$1$2' . $new . '$3$1';
 			return preg_replace( $pattern, $replacement, $string );
 		}
 	}
