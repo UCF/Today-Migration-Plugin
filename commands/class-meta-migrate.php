@@ -6,7 +6,7 @@
 if ( ! class_exists( 'Today_Migration_Meta' ) ) {
 	class Today_Migration_Meta {
 		private
-			$mapping = array(
+			$key_mapping = array(
 				'updated_date'  => 'post_header_updated_date',
 				'subtitle'      => 'post_header_subtitle',
 				'deck'          => 'post_header_deck',
@@ -42,7 +42,8 @@ if ( ! class_exists( 'Today_Migration_Meta' ) ) {
 			);
 
 			foreach ( $posts as $post ) {
-				$this->convert_meta( $post );
+				$this->convert_meta_keys( $post );
+				$this->convert_meta_values( $post );
 				$this->progress->tick();
 			}
 
@@ -57,17 +58,36 @@ if ( ! class_exists( 'Today_Migration_Meta' ) ) {
 		 * @since 1.0.0
 		 * @param WP_Post $post The post object
 		 */
-		private function convert_meta( $post ) {
+		private function convert_meta_keys( $post ) {
 			$post_id = $post->ID;
 
-			foreach( $this->mapping as $old_key => $new_key ) {
-				$value = get_post_meta( $post_id, $old_key );
-
-				if ( count( $value ) === 1 ) {
-					$value = $value[0];
-				}
-
+			foreach ( $this->key_mapping as $old_key => $new_key ) {
+				$value = get_post_meta( $post_id, $old_key, true );
 				update_post_meta( $post_id, $new_key, $value );
+			}
+		}
+
+		/**
+		 * Helper function to convert specific meta values
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param WP_Post $post The post object
+		 */
+		private function convert_meta_values( $post ) {
+			// Update templates for single posts. The old 'featured'
+			// template is the new default in the Today Child Theme,
+			// and the old default is now `template-twocol.php`.
+			$page_template = get_post_meta( $post->ID, '_wp_page_template', true );
+			switch ( $page_template ) {
+				case 'default':
+				case '':
+					update_post_meta( $post->ID, '_wp_page_template', 'template-twocol.php' );
+					break;
+				case 'featured-single-post.php':
+					update_post_meta( $post->ID, '_wp_page_template', 'default' );
+					break;
+				default:
+					break;
 			}
 		}
 	}
