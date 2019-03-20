@@ -80,6 +80,8 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 				'post_status'    => array( 'publish', 'pending', 'draft', 'future', 'private' )
 			) );
 
+			$count = count( $posts );
+
 			$this->progress = WP_CLI\Utils\make_progress_bar(
 				"Updating CSS Classes...",
 				$count
@@ -130,8 +132,7 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 		 */
 		private function update_class( $old, $new, $string ) {
 			// Backreferences: $1=<quote>, $2=<before>, $3=<after>
-			// TODO need to fix <quote> backreferences; anything with "q","u","o","t",or "e" in <before> or <after> causes a no-match
-			$pattern = "/class=(?P<quote>\'|\")(?P<before>(?:[^(?P=quote)]+[ ])?(?:[ ]*)?)$old(?P<after>(?:[ ]*)?(?:[ ][^(?P=quote)]+)?)(?P=quote)/i";
+			$pattern = "/class=(?P<quote>\'|\")(?P<before>(?:[^\'\"]+[ ])?(?:[ ]*)?)$old(?P<after>(?:[ ]*)?(?:[ ][^\'\"]+)?)(?P=quote)/i";
 
 			if ( method_exists( $this, $new ) ) {
 				return preg_replace_callback( $pattern, array( $this, $new ), $string );
