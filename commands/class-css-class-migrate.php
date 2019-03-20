@@ -60,7 +60,7 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 				'wp-image-(?P<wpimgid>[0-9a-zA-Z]+)' => 'callback_wp_img_class'
 			),
 			$progress,
-			$converted;
+			$converted = 0;
 
 		/**
 		 * Converts CSS Classes in the old theme to newer classes.
@@ -75,12 +75,10 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 			// Fetch posts of all post types.
 			// Make sure revisions are excluded.
 			$posts = get_posts( array(
-				'post_type'      => 'all',
+				'post_type'      => 'any',
 				'posts_per_page' => -1,
 				'post_status'    => array( 'publish', 'pending', 'draft', 'future', 'private' )
 			) );
-
-			$count = count( $posts );
 
 			$this->progress = WP_CLI\Utils\make_progress_bar(
 				"Updating CSS Classes...",
@@ -101,6 +99,7 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 		 * to their updated equivalents in the new theme
 		 */
 		private function update_classes( $post ) {
+			global $wpdb;
 			$post_content = $post->post_content;
 
 			foreach ( $this->generic_updates as $old_val => $new_val ) {
@@ -113,9 +112,15 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 			}
 
 			if ( $post->post_content !== $post_content ) {
-				$this->converted++;
-				$post->post_content = $post_content;
-				wp_update_post( $post );
+				$update_status = $wpdb->update( $wpdb->posts, array( 'post_content' => $post_content ), array( 'ID' => $post->ID ) );
+				if ( $update_status !== false ) {
+					// echo "Updated post $post->ID ('$post->post_title')\n";
+					$this->converted++;
+					clean_post_cache( $post->ID );
+				}
+				// else {
+				// 	echo "Sadtimes";
+				// }
 			}
 		}
 
@@ -125,6 +130,7 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 		 */
 		private function update_class( $old, $new, $string ) {
 			// Backreferences: $1=<quote>, $2=<before>, $3=<after>
+			// TODO need to fix <quote> backreferences; anything with "q","u","o","t",or "e" in <before> or <after> causes a no-match
 			$pattern = "/class=(?P<quote>\'|\")(?P<before>(?:[^(?P=quote)]+[ ])?(?:[ ]*)?)$old(?P<after>(?:[ ]*)?(?:[ ][^(?P=quote)]+)?)(?P=quote)/i";
 
 			if ( method_exists( $this, $new ) ) {
