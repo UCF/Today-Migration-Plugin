@@ -7,15 +7,15 @@ if ( ! class_exists( 'Today_Migration_Meta' ) ) {
 	class Today_Migration_Meta {
 		private
 			$key_mapping = array(
-				'updated_date'  => 'post_header_updated_date',
-				'subtitle'      => 'post_header_subtitle',
-				'deck'          => 'post_header_deck',
-				'author_title'  => 'post_author_title',
-				'author_byline' => 'post_author_byline',
-				'author_bio'    => 'post_author_bio',
-				'source'        => 'post_source',
-				'primary_tag'   => 'post_primary_tag',
-				'video_url'     => 'post_header_video_url'
+				'updated_date'  => 'field_5c813a34c81af', // 'post_header_updated_date',
+				'subtitle'      => 'field_5c813b75c81b0', // 'post_header_subtitle',
+				'deck'          => 'field_5c813eaac81b1', // 'post_header_deck',
+				'author_title'  => 'field_5c813ebec81b2', // 'post_author_title',
+				'author_byline' => 'field_5c813f0fc81b4', // 'post_author_byline',
+				'author_bio'    => 'field_5c813f22c81b5', // 'post_author_bio',
+				'source'        => 'field_5c8140e7c81bf', // 'post_source',
+				'primary_tag'   => 'field_5c8140a1c81bd', // 'post_primary_tag',
+				'video_url'     => 'field_5c814048c81bb', // 'post_header_video_url'
 			),
 			$progress;
 
@@ -53,7 +53,7 @@ if ( ! class_exists( 'Today_Migration_Meta' ) ) {
 		}
 
 		/**
-		 * Helper function to convert meta fields
+		 * Helper function to convert meta fields to new ACF fields
 		 * @author Jim Barnes
 		 * @since 1.0.0
 		 * @param WP_Post $post The post object
@@ -63,7 +63,7 @@ if ( ! class_exists( 'Today_Migration_Meta' ) ) {
 
 			foreach ( $this->key_mapping as $old_key => $new_key ) {
 				$value = get_post_meta( $post_id, $old_key, true );
-				update_post_meta( $post_id, $new_key, $value );
+				update_field( $new_key, $value, $post_id );
 			}
 		}
 
