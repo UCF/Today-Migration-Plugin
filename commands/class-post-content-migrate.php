@@ -56,13 +56,9 @@ if ( ! class_exists( 'Today_Migration_Post_Content' ) ) {
 			if ( $post->post_content !== $post_content ) {
 				$update_status = $wpdb->update( $wpdb->posts, array( 'post_content' => $post_content ), array( 'ID' => $post->ID ) );
 				if ( $update_status !== false ) {
-					// echo "Updated post $post->ID ('$post->post_title')\n";
 					$this->converted++;
 					clean_post_cache( $post->ID );
 				}
-				// else {
-				// 	echo "Sadtimes";
-				// }
 			}
 		}
 	}
