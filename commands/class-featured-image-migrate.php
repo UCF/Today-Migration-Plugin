@@ -5,8 +5,7 @@
 if ( ! class_exists( 'Today_Migration_Featured_Image' ) ) {
 	class Today_Migration_Featured_Image {
 		private
-			$custom_meta_field = 'post_header_image',
-			$acf_field_id      = 'field_5c813f8ac81b8',
+			$acf_field_id = 'field_5c813f8ac81b8', // post_header_image
 			$progress,
 			$converted = 0;
 
