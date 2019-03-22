@@ -14,13 +14,16 @@ if ( ! class_exists( 'Today_Migration_All' ) ) {
 		 * @when after_wp_load
 		 */
 		public function __invoke( $args ) {
-			$meta = new Today_Migration_Meta();
+			$content = new Today_Migration_Post_Content();
+			$content->__invoke( $args );
+
+			$meta    = new Today_Migration_Meta();
 			$meta->__invoke( $args );
 
-			$feat = new Today_Migration_Featured_Image();
-			$feat->__invoke( $args );
+			$feature = new Today_Migration_Featured_Image();
+			$feature->__invoke( $args );
 
-			$css  = new Today_Migration_CSS_Classes();
+			$css     = new Today_Migration_CSS_Classes();
 			$css->__invoke( $args );
 
 			WP_CLI::success( "Finished running all tasks." );
