@@ -6,10 +6,61 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 	class Today_Migration_CSS_Classes {
 		private
 			$generic_updates = array(
-				'img-responsive' => 'img-fluid'
+				'media--view-mode--three_by_four_hundred' => '',
+				'media-element-container' => '',
+				'media' => '',
+				'container' => '',
+				'column' => '',
+				'colum' => '',
+				'uBlogsy_post_container' => '',
+				'uBlogsy_post_date' => '',
+				'uBlogsy_post' => '',
+				'uBlogsy_bottom_border' => '',
+				'first-p' => '',
+				'first' => '',
+				'bodytext' => '',
+				'Body' => '',
+
+				'_2cuy' => '',
+				'_3dgx' => '',
+				'_2vxa' => '',
+				'apple-converted-space' => '',
+				'article-content' => '',
+				'border' => '',
+				'docs' => '',
+				'dropcap2' => '',
+				'external' => '',
+				'hiddenSpellError' => '',
+				'interest-add' => '',
+				'large' => '',
+				'main-video' => '',
+				'main-interior' => '',
+				'MsoNormal' => '',
+				'p1' => '',
+				's1' => '',
+				'story-left' => '',
+				'title' => '',
+				'watch-the-video' => '',
+				'wp-menu-arrow' => '',
+
+				// Translations for Athena compatibility
+				'float-left' => '',
+				'float-right' => '',
+				'alignleft' => 'float-left',
+				'alignright' => 'float-right',
+				'aligncenter' => 'mx-auto d-block',
+				'alignnone' => '',
+				'pull-left' => 'float-left',
+				'pull-right' => 'float-right',
+				'img-responsive' => 'img-fluid',
+				'img-circle' => 'rounded-circle'
+			),
+			$regex_updates = array(
+				// Translations for Athena compatibility
+				'wp-image-(?P<wpimgid>[0-9a-zA-Z]+)' => 'callback_wp_img_class'
 			),
 			$progress,
-			$converted;
+			$converted = 0;
 
 		/**
 		 * Converts CSS Classes in the old theme to newer classes.
@@ -21,9 +72,12 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 		 * @when after_wp_load
 		 */
 		public function __invoke( $args ) {
+			// Fetch posts of all post types.
+			// Make sure revisions are excluded.
 			$posts = get_posts( array(
+				'post_type'      => 'any',
 				'posts_per_page' => -1,
-				'post_status'    => 'any'
+				'post_status'    => array( 'publish', 'pending', 'draft', 'future', 'private' )
 			) );
 
 			$count = count( $posts );
@@ -34,7 +88,7 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 			);
 
 			foreach ( $posts as $post ) {
-				$this->update_generic_classes( $post );
+				$this->update_classes( $post );
 				$this->progress->tick();
 			}
 
@@ -44,26 +98,52 @@ if ( ! class_exists( 'Today_Migration_CSS_Classes' ) ) {
 
 		/**
 		 * Helper function that converts CSS Classes
-		 * to their updated equivilents in the new theme
+		 * to their updated equivalents in the new theme
 		 */
-		private function update_generic_classes( $post ) {
+		private function update_classes( $post ) {
+			global $wpdb;
 			$post_content = $post->post_content;
 
 			foreach ( $this->generic_updates as $old_val => $new_val ) {
-				$class_escaped = preg_quote( $old_val );
-				$replacement   = 'class="$1' . $new_val . '$2"';
-				$pattern       = "/class=\"(.*)?$class_escaped(.*)?\"/i";
-
-				$post_content = preg_replace( $old_val, $replacement, $post_content );
-
-				if ( $post->post_content !== $post_content ) {
-					$this->converted++;
-				}
-
-				$post->post_content = $post_content;
-
-				wp_update_post( $post );
+				$post_content = $this->update_class( preg_quote( $old_val ), $new_val, $post_content );
 			}
+
+			foreach ( $this->regex_updates as $old_val => $new_val ) {
+				// Assume values in $regex_updates are regex-safe
+				$post_content = $this->update_class( $old_val, $new_val, $post_content );
+			}
+
+			if ( $post->post_content !== $post_content ) {
+				$update_status = $wpdb->update( $wpdb->posts, array( 'post_content' => $post_content ), array( 'ID' => $post->ID ) );
+				if ( $update_status !== false ) {
+					$this->converted++;
+					clean_post_cache( $post->ID );
+				}
+			}
+		}
+
+		/**
+		 * Performs string replacement of a single class within
+		 * all class attributes in the given $string.
+		 */
+		private function update_class( $old, $new, $string ) {
+			// Backreferences: $1=<quote>, $2=<before>, $3=<after>
+			$pattern = "/class=(?P<quote>\'|\")(?P<before>(?:[^\'\"]+[ ])?(?:[ ]*)?)$old(?P<after>(?:[ ]*)?(?:[ ][^\'\"]+)?)(?P=quote)/i";
+
+			if ( method_exists( $this, $new ) ) {
+				return preg_replace_callback( $pattern, array( $this, $new ), $string );
+			}
+			else {
+				$replacement = 'class=$1$2' . $new . '$3$1';
+				return preg_replace( $pattern, $replacement, $string );
+			}
+		}
+
+		/**
+		 * Custom callback function for updating 'wp-image-*' classes
+		 */
+		static function callback_wp_img_class( $matches ) {
+			return 'class=' . $matches['quote'] . $matches['before'] . 'img-fluid wp-image-' . $matches['wpimgid'] . $matches['after'] . $matches['quote'];
 		}
 	}
 
