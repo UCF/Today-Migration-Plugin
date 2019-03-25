@@ -1,20 +1,13 @@
-=== Today Migration Plugin ===
-Contributors: ucfwebcom
-Requires at least: 4.9.7
-Tested up to: 4.9.7
-Stable tag: 1.0.1
-Requires PHP: 5.4
-License: GPLv3 or later
-License URI: http://www.gnu.org/copyleft/gpl-3.0.html
+# Today Migration Plugin #
 
 Provides a series of wp cli tasks for manipulating data used by the old Today-Bootstrap theme to work with the new theme and associated plugins.
 
 
-== Description ==
+## Description ##
 
 Provides a series of wp cli tasks for manipulating data used by the old Today-Bootstrap theme to work with the new theme and associated plugins.
 
-=== Commands ===
+# Commands #
 
 * `wp today migrate meta`
     * Converts post_meta keys from the ones used on the old Today site to the keys used in the new site.
@@ -26,31 +19,31 @@ Provides a series of wp cli tasks for manipulating data used by the old Today-Bo
     * Runs the above three commands in sequence.
 
 
-== Changelog ==
+## Changelog ##
 
-= 1.0.1 =
+### 1.0.1 ###
 Bug Fixes:
 * Removed WPINC check as this will be false when using this as a wp cli package.
 
-= 1.0.0 =
+### 1.0.0 ###
 * Initial release
 
 
-== Upgrade Notice ==
+## Upgrade Notice ##
 
 n/a
 
 
-== Development ==
+## Development ##
 
 [Enabling debug mode](https://codex.wordpress.org/Debugging_in_WordPress) in your `wp-config.php` file is recommended during development to help catch warnings and bugs.
 
-= Requirements =
+### Requirements ###
 * node
 * gulp-cli
 * wp cli
 
-= Instructions =
+### Instructions ###
 1. Clone the Today-Migration-Plugin repo into your local development environment, within your WordPress installation's `plugins/` directory: `git clone https://github.com/UCF/Today-Migration-Plugin.git`
 2. `cd` into the new Today-Migration-Plugin directory, and run `npm install` to install required packages for development into `node_modules/` within the repo
 3. Optional: If you'd like to enable [BrowserSync](https://browsersync.io) for local development, or make other changes to this project's default gulp configuration, copy `gulp-config.template.json`, make any desired changes, and save as `gulp-config.json`.
@@ -62,7 +55,7 @@ n/a
 5. If you haven't already done so, create a new WordPress site on your development environment to test this plugin against.
 6. Activate this plugin on your development WordPress site.
 
-= Composer Installation =
+### Composer Installation ###
 1. Install using `wp package install git@github.com:UCF/Today-Migration-Plugin.git` or `wp package install https://github.com/UCF/Today-Migration-Plugin.git`.
 
 Note: If you get a `WP-CLI ran out of memory` error when trying to install, you can either increase the `memory_limit` parameter in your `php.ini` file, or you can run the following command for a temporary workaround:
@@ -71,10 +64,10 @@ Note: If you get a `WP-CLI ran out of memory` error when trying to install, you 
 php -d memory_limit=512M "$(which wp)" package install git@github.com:UCF/Today-Migration-Plugin.git
 ```
 
-= Other Notes =
+### Other Notes ###
 * This plugin's README.md file is automatically generated. Please only make modifications to the README.txt file, and make sure the `gulp readme` command has been run before committing README changes.  See the [contributing guidelines](https://github.com/UCF/Today-Migration-Plugin/blob/master/CONTRIBUTING.md) for more information.
 
 
-== Contributing ==
+## Contributing ##
 
 Want to submit a bug report or feature request?  Check out our [contributing guidelines](https://github.com/UCF/Today-Migration-Plugin/blob/master/CONTRIBUTING.md) for more information.  We'd love to hear from you!
