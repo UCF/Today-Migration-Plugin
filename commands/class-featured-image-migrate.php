@@ -5,9 +5,12 @@
 if ( ! class_exists( 'Today_Migration_Featured_Image' ) ) {
 	class Today_Migration_Featured_Image {
 		private
-			$acf_field_id = 'field_5c813f8ac81b8', // post_header_image
+			$acf_header_image_id = 'field_5c813f8ac81b8', // post_header_image
+			$acf_header_video_id = 'field_5c814048c81bb', // post_header_video_url
+			$acf_header_type_id = 'field_5c813fb7c81b9', // header_media_type
 			$progress,
-			$converted = 0;
+			$converted_images = 0,
+			$converted_header_types = 0;
 
 		/**
 		 * Converts featured images to a custom meta field.
@@ -33,11 +36,13 @@ if ( ! class_exists( 'Today_Migration_Featured_Image' ) ) {
 
 			foreach ( $posts as $post ) {
 				$this->convert_featured_image( $post );
+				$this->set_header_media_type( $post );
 				$this->progress->tick();
 			}
 
 			$this->progress->finish();
-			WP_CLI::success( "Converted $this->converted featured images out of $count processed posts." );
+			WP_CLI::success( "Converted $this->converted_images featured images out of $count processed posts." );
+			WP_CLI::success( "Set header media types for $this->converted_header_types of $count processed posts." );
 		}
 
 		/**
@@ -49,8 +54,32 @@ if ( ! class_exists( 'Today_Migration_Featured_Image' ) ) {
 			$image_id = $this->get_post_primary_image_id( $post_id );
 
 			if ( $image_id ) {
-				update_field( $this->acf_field_id, $image_id, $post_id );
-				$this->converted++;
+				update_field( $this->acf_header_image_id, $image_id, $post_id );
+				$this->converted_images++;
+			}
+		}
+
+		/**
+		 * Updates the "Header Media Type" field for the post
+		 * depending on whether a header video or just an image
+		 * is available.
+		 */
+		private function set_header_media_type( $post ) {
+			$post_id           = $post->ID;
+			$video_url         = get_field( $this->acf_header_video_id, $post_id, false );
+			$image_url         = get_field( $this->acf_header_image_id, $post_id, false );
+			$header_media_type = '';
+
+			if ( $video_url ) {
+				$header_media_type = 'video';
+			}
+			else if ( $image_url ) {
+				$header_media_type = 'image';
+			}
+
+			if ( $header_media_type ) {
+				update_field( $this->acf_header_type_id, $header_media_type, $post_id );
+				$this->converted_header_types++;
 			}
 		}
 
