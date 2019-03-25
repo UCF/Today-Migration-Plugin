@@ -42,6 +42,7 @@ if ( ! class_exists( 'Today_Migration_Featured_Image' ) ) {
 
 			$this->progress->finish();
 			WP_CLI::success( "Converted $this->converted_images featured images out of $count processed posts." );
+			WP_CLI::success( "Set header media types for $this->converted_header_types of $count processed posts." );
 		}
 
 		/**
