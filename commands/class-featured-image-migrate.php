@@ -65,8 +65,8 @@ if ( ! class_exists( 'Today_Migration_Featured_Image' ) ) {
 		 */
 		private function set_header_media_type( $post ) {
 			$post_id           = $post->ID;
-			$video_url         = get_field( $this->acf_header_image_id, $post_id, false );
-			$image_url         = get_field( $this->acf_header_video_id, $post_id, false );
+			$video_url         = get_field( $this->acf_header_video_id, $post_id, false );
+			$image_url         = get_field( $this->acf_header_image_id, $post_id, false );
 			$header_media_type = '';
 
 			if ( $video_url ) {
@@ -77,7 +77,7 @@ if ( ! class_exists( 'Today_Migration_Featured_Image' ) ) {
 			}
 
 			if ( $header_media_type ) {
-				update_field( $this->$acf_header_type_id, $header_media_type, $post_id );
+				update_field( $this->acf_header_type_id, $header_media_type, $post_id );
 				$this->converted_header_types++;
 			}
 		}
