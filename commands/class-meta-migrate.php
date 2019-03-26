@@ -8,8 +8,6 @@ if ( ! class_exists( 'Today_Migration_Meta' ) ) {
 		private
 			$key_mapping = array(
 				'updated_date'  => 'field_5c813a34c81af', // 'post_header_updated_date',
-				'subtitle'      => 'field_5c813b75c81b0', // 'post_header_subtitle',
-				'deck'          => 'field_5c813eaac81b1', // 'post_header_deck',
 				'author_title'  => 'field_5c813ebec81b2', // 'post_author_title',
 				'author_byline' => 'field_5c813f0fc81b4', // 'post_author_byline',
 				'author_bio'    => 'field_5c813f22c81b5', // 'post_author_bio',
@@ -17,6 +15,9 @@ if ( ! class_exists( 'Today_Migration_Meta' ) ) {
 				'primary_tag'   => 'field_5c8140a1c81bd', // 'post_primary_tag',
 				'video_url'     => 'field_5c814048c81bb', // 'post_header_video_url'
 			),
+			$subtitle_key_old = 'subtitle',
+			$deck_key_old = 'deck',
+			$deck_key_new = 'field_5c813eaac81b1', // 'post_header_deck',
 			$progress;
 
 		/**
@@ -43,6 +44,7 @@ if ( ! class_exists( 'Today_Migration_Meta' ) ) {
 
 			foreach ( $posts as $post ) {
 				$this->convert_meta_keys( $post );
+				$this->convert_deck_meta_keys( $post );
 				$this->convert_meta_values( $post );
 				$this->progress->tick();
 			}
@@ -65,6 +67,26 @@ if ( ! class_exists( 'Today_Migration_Meta' ) ) {
 				$value = get_post_meta( $post_id, $old_key, true );
 				update_field( $new_key, $value, $post_id );
 			}
+		}
+
+		/**
+		 * Function that handles consolidation of existing "subtitle"
+		 * and "deck" fields into a single "deck" field
+		 */
+		private function convert_deck_meta_keys( $post ) {
+			$post_id  = $post->ID;
+			$subtitle = get_post_meta( $post_id, $this->subtitle_key_old, true );
+			$deck     = get_post_meta( $post_id, $this->deck_key_old, true );
+			$deck_new = '';
+
+			if ( $deck ) {
+				$deck_new = $deck;
+			}
+			else if ( $subtitle ) {
+				$deck_new = $subtitle;
+			}
+
+			update_field( $this->deck_key_new, $deck_new, $post_id );
 		}
 
 		/**
