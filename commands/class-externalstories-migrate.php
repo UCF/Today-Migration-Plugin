@@ -64,42 +64,46 @@ if ( ! class_exists( 'Today_Migration_ExternalStories' ) ) {
 		 * @param WP_Post $post The post object
 		 */
 		private function convert_external_story( $post ) {
-			$post_id = $post->ID;
+			$post_id_old = $post->ID;
 
 			// Back out early if no URL is set
-			$url = get_post_meta( $post_id, 'externalstory_url', true ); // Link to the external article
+			$url = get_post_meta( $post_id_old, 'externalstory_url', true ); // Link to the external article
 			if ( ! $url ) { return; }
 
 			$post       = $post->to_array();
-			$text       = get_post_meta( $post_id, 'externalstory_text', true ); // Actual link text/external article name
-			$desc       = get_post_meta( $post_id, 'externalstory_description', true ); // Short description of the external story
-			$source     = wp_get_post_terms( $post_id, 'sources' ); // Source terms already assigned to the external story
-			$source_old = get_post_meta( $post_id, 'externalstory_source', true ); // Deprecated 'source' value
+			$text       = get_post_meta( $post_id_old, 'externalstory_text', true ); // Actual link text/external article name
+			$desc       = get_post_meta( $post_id_old, 'externalstory_description', true ); // Short description of the external story
+			$source     = wp_get_post_terms( $post_id_old, 'sources', array( 'fields' => 'ids' ) ); // Source terms already assigned to the external story
+			$source_old = get_post_meta( $post_id_old, 'externalstory_source', true ); // Deprecated 'source' value
 
 			// Set the link text. Back out early if no title text is set.
 			$post['post_title'] = $text ?: $post['post_title'];
 			if ( ! $post['post_title'] ) { return; }
 
-			$post['guid'] = ''; // force the GUID to be regenerated
+			unset( $post['id'] );
+			unset( $post['guid'] );
 			$post['post_type'] = 'ucf_resource_link';
 
 			// Actually convert the post
-			$updated = wp_insert_post( $post );
+			$post_id_new = wp_insert_post( $post );
 
-			if ( $post_id === $updated ) {
+			if ( $post_id_new && ! is_wp_error( $post_id_new ) ) {
 				// Set Resource Link Type
-				wp_set_post_terms( $post_id, array( $this->resource_link_type_term->term_id ), 'resource_link_types' );
+				wp_set_post_terms( $post_id_new, array( $this->resource_link_type_term->term_id ), 'resource_link_types' );
 				// Set link URL
-				update_post_meta( $post_id, 'ucf_resource_link_url', $url );
+				update_post_meta( $post_id_new, 'ucf_resource_link_url', $url );
 				// Set link description
-				update_field( 'field_5c9d1e7a9ec0c', $desc, $post_id ); // ucf_resource_link_description
+				update_field( 'field_5c9d1e7a9ec0c', $desc, $post_id_new ); // ucf_resource_link_description
 
 				// Set link source
 				if ( empty( $source ) ) {
 					$source_old_term = get_term_by( 'name', $source_old, 'sources', ARRAY_A ) ?: wp_insert_term( $source_old, 'sources' );
 					if ( ! empty( $source_old_term ) && ! is_wp_error( $source_old_term ) ) {
-						wp_set_post_terms( $post_id, array( $source_old_term['term_id'] ), 'sources' );
+						wp_set_post_terms( $post_id_new, array( $source_old_term['term_id'] ), 'sources' );
 					}
+				}
+				else {
+					wp_set_post_terms( $post_id_new, $source, 'sources' );
 				}
 
 				$this->converted++;
