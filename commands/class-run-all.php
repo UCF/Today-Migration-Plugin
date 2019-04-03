@@ -29,6 +29,9 @@ if ( ! class_exists( 'Today_Migration_All' ) ) {
 			$css = new Today_Migration_CSS_Classes();
 			$css->__invoke( $args );
 
+			$tags = new Today_Migration_Tag_Removal();
+			$tags->__invoke( $args );
+
 			WP_CLI::success( "Finished running all tasks." );
 		}
 	}
