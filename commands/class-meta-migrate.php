@@ -126,7 +126,7 @@ if ( ! class_exists( 'Today_Migration_Meta' ) ) {
 				update_field( 'field_5c9e1c1c15df3', 1, $post->ID );
 				wp_remove_object_terms( $post->ID, 'main-site-stories', 'post_tag' );
 			} else {
-				update_post_meta( 'field_5c9e1c1c15df3', 0, $post->ID );
+				update_field( 'field_5c9e1c1c15df3', 0, $post->ID );
 			}
 		}
 	}
