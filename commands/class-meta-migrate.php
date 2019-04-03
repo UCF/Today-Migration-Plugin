@@ -46,6 +46,7 @@ if ( ! class_exists( 'Today_Migration_Meta' ) ) {
 				$this->convert_meta_keys( $post );
 				$this->convert_deck_meta_keys( $post );
 				$this->convert_meta_values( $post );
+				$this->convert_main_site_story( $post );
 				$this->progress->tick();
 			}
 
@@ -110,6 +111,22 @@ if ( ! class_exists( 'Today_Migration_Meta' ) ) {
 					break;
 				default:
 					break;
+			}
+		}
+
+		/**
+		 * Helper functino that adds the post_main_site_story
+		 * meta if the tag exists on the post
+		 * @author Jim Barnes
+		 * @since 1.0.2
+		 * @param WP_Post $post The post object
+		 */
+		private function convert_main_site_story( $post ) {
+			if ( has_term( 'main-site-stories', 'post_tag', $post ) ) {
+				update_field( 'field_5c9e1c1c15df3', 1, $post->ID );
+				wp_remove_object_terms( $post->ID, 'main-site-stories', 'post_tag' );
+			} else {
+				update_post_meta( 'field_5c9e1c1c15df3', 0, $post->ID );
 			}
 		}
 	}
