@@ -123,10 +123,10 @@ if ( ! class_exists( 'Today_Migration_Meta' ) ) {
 		 */
 		private function convert_main_site_story( $post ) {
 			if ( has_term( 'main-site-stories', 'post_tag', $post ) ) {
-				update_post_meta( $post->ID, 'post_main_site_story', true );
+				update_field( 'post_main_site_story', 1, $post->ID );
 				wp_remove_object_terms( $post->ID, 'main-site-stories', 'post_tag' );
 			} else {
-				update_post_meta( $post->ID, 'post_main_site_story', false );
+				update_post_meta( 'post_main_site_story', 0, $post->ID );
 			}
 		}
 	}
