@@ -6,7 +6,7 @@ if ( ! class_exists( 'Today_Migration_ExternalStories' ) ) {
 	class Today_Migration_ExternalStories {
 		private
 			$resource_link_type_name = 'External Story',
-			$resource_link_type_term,
+			$resource_link_type_term_id,
 			$progress,
 			$converted = 0;
 
@@ -33,7 +33,7 @@ if ( ! class_exists( 'Today_Migration_ExternalStories' ) ) {
 				$count
 			);
 
-			$this->resource_link_type_term = $this->get_or_create_resource_link_type();
+			$this->resource_link_type_term_id = $this->get_or_create_resource_link_type();
 
 			foreach ( $posts as $post ) {
 				$this->convert_external_story( $post );
@@ -53,7 +53,18 @@ if ( ! class_exists( 'Today_Migration_ExternalStories' ) ) {
 		 * @since 1.0.0
 		 */
 		private function get_or_create_resource_link_type() {
-			return get_term_by( 'name', $this->resource_link_type_name, 'resource_link_types' ) ?: wp_insert_term( $this->resource_link_type_name, 'resource_link_types' );
+			$term_id = null;
+			$term_data = get_term_by( 'name', $this->resource_link_type_name, 'resource_link_types', ARRAY_A );
+
+			if ( ! $term_data ) {
+				$term_data = wp_insert_term( $this->resource_link_type_name, 'resource_link_types' );
+			}
+
+			if ( isset( $term_data['term_id'] ) ) {
+				$term_id = $term_data['term_id'];
+			}
+
+			return $term_id;
 		}
 
 		/**
@@ -89,7 +100,7 @@ if ( ! class_exists( 'Today_Migration_ExternalStories' ) ) {
 
 			if ( $post_id_new && ! is_wp_error( $post_id_new ) ) {
 				// Set Resource Link Type
-				wp_set_post_terms( $post_id_new, array( $this->resource_link_type_term->term_id ), 'resource_link_types' );
+				wp_set_post_terms( $post_id_new, array( $this->resource_link_type_term ), 'resource_link_types' );
 				// Set link URL
 				update_post_meta( $post_id_new, 'ucf_resource_link_url', $url );
 				// Set link description
