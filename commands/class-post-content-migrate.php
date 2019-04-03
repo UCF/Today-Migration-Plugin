@@ -49,6 +49,13 @@ if ( ! class_exists( 'Today_Migration_Post_Content' ) ) {
 			global $wpdb;
 			$post_content = $post->post_content;
 
+			// Super special <u> tag removal on everything
+			$post_content = preg_replace(
+				'/\<\/?u(.|\s)*?\>/i',
+				'',
+				$post_content
+			);
+
 			if ( get_page_template_slug( $post->ID ) === '' ) {
 				$post_content = strip_tags( $post_content, $this->allowed_tags );
 			}
