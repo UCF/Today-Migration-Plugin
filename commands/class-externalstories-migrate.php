@@ -100,7 +100,7 @@ if ( ! class_exists( 'Today_Migration_ExternalStories' ) ) {
 
 			if ( $post_id_new && ! is_wp_error( $post_id_new ) ) {
 				// Set Resource Link Type
-				wp_set_post_terms( $post_id_new, array( $this->resource_link_type_term ), 'resource_link_types' );
+				wp_set_post_terms( $post_id_new, array( $this->resource_link_type_term_id ), 'resource_link_types' );
 				// Set link URL
 				update_post_meta( $post_id_new, 'ucf_resource_link_url', $url );
 				// Set link description
