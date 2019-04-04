@@ -61,7 +61,7 @@ if ( ! class_exists( 'Today_Migration_Duplicate_Images' ) ) {
 			$img_urls = array();
 
 			foreach( $image['sizes'] as $key => $val ) {
-				if ( strpos( $key, array( '-width', '-height' ) ) === -1 ) {
+				if ( strpos( $key, '-width' ) === -1 && strpos( $key, '-height' ) === -1 ) {
 					$img_urls[] = preg_quote( $val );
 				}
 			}
