@@ -68,19 +68,17 @@ if ( ! class_exists( 'Today_Migration_Duplicate_Images' ) ) {
 
 			$pattern .= implode( '|', $img_urls ) . ')".*?\/?>/i';
 
-			var_dump( $pattern );
+			$post_content = $post->post_content;
 
-			// $post_content = $post->post_content;
+			preg_replace( $pattern, '', $post_content );
 
-			// preg_replace( $pattern, '', $post_content );
-
-			// if ( $post->post_content !== $post_content ) {
-			// 	$update_status = $wpdb->update( $wpdb->posts, array( 'post_content' => $post_content ), array( 'ID' => $post->ID ) );
-			// 	if ( $update_status !== false ) {
-			// 		$this->removed_images++;
-			// 		clean_post_cache( $post->ID );
-			// 	}
-			// }
+			if ( $post->post_content !== $post_content ) {
+				$update_status = $wpdb->update( $wpdb->posts, array( 'post_content' => $post_content ), array( 'ID' => $post->ID ) );
+				if ( $update_status !== false ) {
+					$this->removed_images++;
+					clean_post_cache( $post->ID );
+				}
+			}
 		}
 	}
 
