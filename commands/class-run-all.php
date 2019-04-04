@@ -32,6 +32,9 @@ if ( ! class_exists( 'Today_Migration_All' ) ) {
 			$tags = new Today_Migration_Tag_Removal();
 			$tags->__invoke( $args );
 
+			$dups = new Today_Migration_Duplicate_Images();
+			$dups->__invoke( $args );
+
 			WP_CLI::success( "Finished running all tasks." );
 		}
 	}
