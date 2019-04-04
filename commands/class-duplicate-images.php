@@ -56,7 +56,7 @@ if ( ! class_exists( 'Today_Migration_Duplicate_Images' ) ) {
 			// No header image, then return
 			if ( ! $image ) return;
 
-			$pattern = '/\[caption.*?\]?<img.*?src="(';
+			$pattern = '/(\[caption.*?\])?<img.*?src="(';
 
 			$img_urls = array();
 
@@ -66,7 +66,7 @@ if ( ! class_exists( 'Today_Migration_Duplicate_Images' ) ) {
 				}
 			}
 
-			$pattern .= implode( '|', $img_urls ) . ')".*?\/?>.*?\[\/caption\]?/i';
+			$pattern .= implode( '|', $img_urls ) . ')".*?\/?>.*?(\[\/caption\])?/i';
 
 			$post_content = $post->post_content;
 
