@@ -61,8 +61,8 @@ if ( ! class_exists( 'Today_Migration_Duplicate_Images' ) ) {
 			$img_urls = array();
 
 			foreach( $image['sizes'] as $key => $val ) {
-				if ( strpos( $key, '-width' ) === -1 && strpos( $key, '-height' ) === -1 ) {
-					$img_urls[] = preg_quote( $val );
+				if ( strpos( $key, '-width' ) === false && strpos( $key, '-height' ) === false ) {
+					$img_urls[] = preg_quote( $val, '/' );
 				}
 			}
 
@@ -70,7 +70,7 @@ if ( ! class_exists( 'Today_Migration_Duplicate_Images' ) ) {
 
 			$post_content = $post->post_content;
 
-			preg_replace( $pattern, '', $post_content );
+			$post_content = preg_replace( $pattern, '', $post_content );
 
 			if ( $post->post_content !== $post_content ) {
 				$update_status = $wpdb->update( $wpdb->posts, array( 'post_content' => $post_content ), array( 'ID' => $post->ID ) );
