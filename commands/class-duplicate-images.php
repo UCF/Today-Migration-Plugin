@@ -66,7 +66,7 @@ if ( ! class_exists( 'Today_Migration_Duplicate_Images' ) ) {
 				}
 			}
 
-			$pattern .= implode( '|', $img_urls ) . ')".*?\/?>.*?(\[\/caption\])?/i';
+			$pattern .= implode( '|', $img_urls ) . ')".*?\/?>.+(\[\/caption\])?/i';
 
 			$post_content = $post->post_content;
 
