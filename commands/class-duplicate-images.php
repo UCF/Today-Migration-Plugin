@@ -50,12 +50,37 @@ if ( ! class_exists( 'Today_Migration_Duplicate_Images' ) ) {
 		 * @param WP_Post $post The post object
 		 */
 		private function remove_duplicate_images( $post ) {
+			global $wpdb;
 			$image = get_field( $this->acf_header_image_id, $post->ID );
 
 			// No header image, then return
 			if ( ! $image ) return;
 
-			var_dump( $image );
+			$pattern = '/<img.*?src="(';
+
+			$img_urls = array();
+
+			foreach( $image['sizes'] as $key => $val ) {
+				if ( strpos( $key, array( '-width', '-height' ) ) === -1 ) {
+					$img_urls[] = preg_quote( $val );
+				}
+			}
+
+			$pattern .= implode( '|', $img_urls ) . ')".*?\/?>/i';
+
+			var_dump( $pattern );
+
+			// $post_content = $post->post_content;
+
+			// preg_replace( $pattern, '', $post_content );
+
+			// if ( $post->post_content !== $post_content ) {
+			// 	$update_status = $wpdb->update( $wpdb->posts, array( 'post_content' => $post_content ), array( 'ID' => $post->ID ) );
+			// 	if ( $update_status !== false ) {
+			// 		$this->removed_images++;
+			// 		clean_post_cache( $post->ID );
+			// 	}
+			// }
 		}
 	}
 
