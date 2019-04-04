@@ -15,5 +15,6 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	require_once dirname( __FILE__ ) . '/commands/class-css-class-migrate.php';
 	require_once dirname( __FILE__ ) . '/commands/class-post-content-migrate.php';
 	require_once dirname( __FILE__ ) . '/commands/class-tag-removal.php';
+	require_once dirname( __FILE__ ) . '/commands/class-duplicate-images.php';
 	require_once dirname( __FILE__ ) . '/commands/class-run-all.php';
 }
