@@ -21,10 +21,8 @@ if ( ! class_exists( 'Today_Migration_Sources' ) ) {
 		 * @when after_wp_load
 		 */
 		public function __invoke( $args ) {
-			$posts = get_posts( array(
-				'post_type'      => 'ucf_resource_link',
-				'posts_per_page' => -1,
-				'post_status'    => 'any'
+			$terms = get_terms( array(
+				'taxonomy' => 'sources'
 			) );
 
 			$count = count( $posts );
