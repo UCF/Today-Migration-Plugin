@@ -9,6 +9,7 @@ if ( ! class_exists( 'Today_Migration_Sources' ) ) {
 			$key_mapping = array(
 				'news_source_image'  => 'field_5c9d07cbed834' // 'sources_icon',
 			),
+			$updated = 0,
 			$progress;
 
 		/**
@@ -40,7 +41,7 @@ if ( ! class_exists( 'Today_Migration_Sources' ) ) {
 
 			$this->progress->finish();
 
-			WP_CLI::success( "Converted resource link meta for $count posts." );
+			WP_CLI::success( "Converted $this->updated source icons out of $count sources." );
 		}
 
 		/**
@@ -54,7 +55,10 @@ if ( ! class_exists( 'Today_Migration_Sources' ) ) {
 
 			foreach ( $this->key_mapping as $old_key => $new_key ) {
 				$value = get_term_meta( $term_id, $old_key, true );
-				update_field( $new_key, $value, $term_id );
+				if ( $value ) {
+					update_field( $new_key, $value, 'sources_' . $term_id );
+					$this->updated++;
+				}
 			}
 		}
 	}
