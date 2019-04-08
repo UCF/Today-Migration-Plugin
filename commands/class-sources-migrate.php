@@ -7,7 +7,7 @@ if ( ! class_exists( 'Today_Migration_Sources' ) ) {
 	class Today_Migration_Sources {
 		private
 			$key_mapping = array(
-				'news_source_image'  => 'field_5c9d07cbed834' // 'post_header_updated_date',
+				'news_source_image'  => 'field_5c9d07cbed834' // 'sources_icon',
 			),
 			$progress;
 
@@ -22,18 +22,19 @@ if ( ! class_exists( 'Today_Migration_Sources' ) ) {
 		 */
 		public function __invoke( $args ) {
 			$terms = get_terms( array(
-				'taxonomy' => 'sources'
+				'taxonomy'   => 'sources',
+				'hide_empty' => false
 			) );
 
-			$count = count( $posts );
+			$count = count( $terms );
 
 			$this->progress = WP_CLI\Utils\make_progress_bar(
-				"Converting Resource Link post meta...",
+				"Converting Sources term meta...",
 				$count
 			);
 
-			foreach ( $posts as $post ) {
-				$this->convert_meta_keys( $post );
+			foreach ( $terms as $term ) {
+				$this->convert_meta_keys( $term );
 				$this->progress->tick();
 			}
 
@@ -48,12 +49,12 @@ if ( ! class_exists( 'Today_Migration_Sources' ) ) {
 		 * @since 1.0.0
 		 * @param WP_Post $post The post object
 		 */
-		private function convert_meta_keys( $post ) {
-			$post_id = $post->ID;
+		private function convert_meta_keys( $term ) {
+			$term_id = $term->term_id;
 
 			foreach ( $this->key_mapping as $old_key => $new_key ) {
-				$value = get_post_meta( $post_id, $old_key, true );
-				update_field( $new_key, $value, $post_id );
+				$value = get_term_meta( $term_id, $old_key, true );
+				update_field( $new_key, $value, $term_id );
 			}
 		}
 	}
