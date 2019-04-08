@@ -17,6 +17,9 @@ if ( ! class_exists( 'Today_Migration_All' ) ) {
 			$ext_stories = new Today_Migration_ExternalStories();
 			$ext_stories->__invoke( $args );
 
+			$sources     = new Today_Migration_Sources();
+			$sources->__invoke( $args );
+
 			$content = new Today_Migration_Post_Content();
 			$content->__invoke( $args );
 
