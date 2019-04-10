@@ -61,15 +61,16 @@ if ( ! class_exists( 'Today_Migration_Post_Content' ) ) {
 			}
 
 			// Convert post_date and add post_header_publish_date if needed.
-			$updated_date  = $post->post_date;
-			$publish_date  = get_post_meta( $post->ID, 'updated_date', true );
+			$updated_date  = get_post_meta( $post->ID, 'updated_date', true );
+			$publish_date  = $post->post_date;
 
-			$orig_pub_date = isset( $publish_date ) ? date( 'Y-m-d', strtotime( $publish_date ) ) : $updated_date;
+			$updated_date_formatted = isset( $updated_date ) ? date( 'Y-m-d H:i:s', strtotime( $updated_date ) ) : $publish_date;
+			$publish_date_formatted = date( 'Y-m-d', strtotime( $publish_date ) );
 
 			if ( $post->post_content !== $post_content ) {
-				$update_status = $wpdb->update( $wpdb->posts, array( 'post_content' => $post_content ), array( 'ID' => $post->ID ), array( 'post_date' => $updated_date ) );
+				$update_status = $wpdb->update( $wpdb->posts, array( 'post_content' => $post_content ), array( 'ID' => $post->ID ), array( 'post_date' => $updated_date_formatted ) );
 
-				update_post_meta( $post->ID, 'post_header_publish_date', $orig_pub_date );
+				update_post_meta( $post->ID, 'post_header_publish_date', $publish_date_formatted );
 
 				if ( $update_status !== false ) {
 					$this->converted++;
