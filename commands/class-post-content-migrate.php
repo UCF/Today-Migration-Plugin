@@ -60,8 +60,17 @@ if ( ! class_exists( 'Today_Migration_Post_Content' ) ) {
 				$post_content = strip_tags( $post_content, $this->allowed_tags );
 			}
 
+			// Convert post_date and add post_header_publish_date if needed.
+			$updated_date  = $post->post_date;
+			$publish_date  = get_post_meta( $post->ID, 'updated_date', true );
+
+			$orig_pub_date = isset( $publish_date ) ? date( 'Y-m-d', strtotime( $publish_date ) ) : $updated_date;
+
 			if ( $post->post_content !== $post_content ) {
-				$update_status = $wpdb->update( $wpdb->posts, array( 'post_content' => $post_content ), array( 'ID' => $post->ID ) );
+				$update_status = $wpdb->update( $wpdb->posts, array( 'post_content' => $post_content ), array( 'ID' => $post->ID ), array( 'post_date' => $updated_date ) );
+
+				update_post_meta( $post->ID, 'post_header_publish_date', $orig_pub_date );
+
 				if ( $update_status !== false ) {
 					$this->converted++;
 					clean_post_cache( $post->ID );
