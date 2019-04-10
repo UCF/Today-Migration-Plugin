@@ -31,9 +31,18 @@ if ( ! class_exists( 'Today_Migration_Post_Content' ) ) {
 				$count
 			);
 
+			// Remove this action, as it is the automatic publish_date setter.
+			if ( function_exists( 'today_post_insert_override' ) ) {
+				remove_action( 'wp_insert_post', 'today_post_insert_override', 10 );
+			}
+
 			foreach ( $posts as $post ) {
 				$this->filter_post_content( $post );
 				$this->progress->tick();
+			}
+
+			if ( function_exists( 'today_post_insert_override' ) ) {
+				add_action( 'wp_insert_post', 'today_post_insert_override', 10, 3 );
 			}
 
 			$this->progress->finish();
@@ -67,10 +76,12 @@ if ( ! class_exists( 'Today_Migration_Post_Content' ) ) {
 			$updated_date_formatted = isset( $updated_date ) ? date( 'Y-m-d H:i:s', strtotime( $updated_date ) ) : $publish_date;
 			$publish_date_formatted = date( 'Y-m-d', strtotime( $publish_date ) );
 
-			if ( $post->post_content !== $post_content ) {
-				$update_status = $wpdb->update( $wpdb->posts, array( 'post_content' => $post_content ), array( 'ID' => $post->ID ), array( 'post_date' => $updated_date_formatted ) );
+			if ( $post->post_content !== $post_content || $updated_date_formatted !== $post->post_date ) {
+				$update_status = $wpdb->update( $wpdb->posts, array( 'post_content' => $post_content, 'post_date' => $updated_date_formatted ), array( 'ID' => $post->ID ) );
 
-				update_post_meta( $post->ID, 'post_header_publish_date', $publish_date_formatted );
+				if ( $publish_date_formatted ) {
+					update_post_meta( $post->ID, 'post_header_publish_date', $publish_date_formatted );
+				}
 
 				if ( $update_status !== false ) {
 					$this->converted++;
