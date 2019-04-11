@@ -7,7 +7,6 @@ if ( ! class_exists( 'Today_Migration_Meta' ) ) {
 	class Today_Migration_Meta {
 		private
 			$key_mapping = array(
-				'updated_date'  => 'field_5c813a34c81af', // 'post_header_updated_date',
 				'author_title'  => 'field_5c813ebec81b2', // 'post_author_title',
 				'author_byline' => 'field_5c813f0fc81b4', // 'post_author_byline',
 				'author_bio'    => 'field_5c813f22c81b5', // 'post_author_bio',
