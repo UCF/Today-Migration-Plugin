@@ -65,6 +65,13 @@ if ( ! class_exists( 'Today_Migration_Post_Content' ) ) {
 				$post_content
 			);
 
+			// Sanitize <a href> values on everything
+			$post_content = preg_replace_callback(
+				'/href=(?P<quote>\'|\")(?P<href>(?:[^\'\"])*)(?P=quote)/i',
+				array( $this, 'sanitize_url' ),
+				$post_content
+			);
+
 			if ( get_page_template_slug( $post->ID ) === '' ) {
 				$post_content = strip_tags( $post_content, $this->allowed_tags );
 			}
@@ -88,6 +95,57 @@ if ( ! class_exists( 'Today_Migration_Post_Content' ) ) {
 					clean_post_cache( $post->ID );
 				}
 			}
+		}
+
+		private function sanitize_url( $match ) {
+			$link = $match[0];
+			$href = isset( $match['href'] ) ? $match['href'] : '';
+			if ( ! $href ) return $link;
+
+			$href_clean = $this->strip_postmaster_redirects( $this->strip_outlook_safelinks( $href ) );
+
+			if ( $href_clean !== $href ) {
+				$link = str_replace( $href, $href_clean, $link );
+			}
+			return $link;
+		}
+
+		/**
+		 * Generic function that replaces a URL with a query param value
+		 * based on specific search criteria in the URL
+		 */
+		private function strip_link_prefix( $url, $search_regex, $query_param ) {
+			if ( preg_match( $search_regex, $url ) ) {
+				$query_params = array();
+				parse_str( parse_url( $url, PHP_URL_QUERY ), $query_params );
+				if ( isset( $query_params[$query_param] ) ) {
+					$url = urldecode( $query_params[$query_param] );
+				}
+			}
+
+			return $url;
+		}
+
+		/**
+		 * Replaces Outlook safelink URLs with the actual redirected URL
+		 */
+		private function strip_outlook_safelinks( $url ) {
+			return $this->strip_link_prefix(
+				$url,
+				'/^https\:\/\/(.*\.)safelinks\.protection\.outlook\.com\//i',
+				'url'
+			);
+		}
+
+		/**
+		 * Replaces Postmaster redirects with the actual redirected URL
+		 */
+		private function strip_postmaster_redirects( $url ) {
+			return $this->strip_link_prefix(
+				$url,
+				'/^https\:\/\/postmaster\.smca\.ucf\.edu\//i',
+				'url'
+			);
 		}
 	}
 
