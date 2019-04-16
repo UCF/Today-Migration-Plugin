@@ -80,7 +80,7 @@ if ( ! class_exists( 'Today_Migration_Post_Content' ) ) {
 			$updated_date  = get_post_meta( $post->ID, 'updated_date', true );
 			$publish_date  = $post->post_date;
 
-			$updated_date_formatted = isset( $updated_date ) ? date( 'Y-m-d H:i:s', strtotime( $updated_date ) ) : $publish_date;
+			$updated_date_formatted = ( ! empty( $updated_date ) ) ? date( 'Y-m-d H:i:s', strtotime( $updated_date ) ) : $publish_date;
 			$publish_date_formatted = date( 'Y-m-d', strtotime( $publish_date ) );
 
 			if ( $post->post_content !== $post_content || $updated_date_formatted !== $post->post_date ) {
