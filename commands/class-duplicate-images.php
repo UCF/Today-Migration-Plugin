@@ -54,9 +54,9 @@ if ( ! class_exists( 'Today_Migration_Duplicate_Images' ) ) {
 			$image = get_field( $this->acf_header_image_id, $post->ID );
 
 			// No header image, then return
-			if ( ! $image ) return;
+			if ( ! $image || ! isset( $image['sizes'] ) ) return;
 
-			$pattern = '/(\[caption.*?\])?(<a.*>)?<img.*?src="(';
+			$pattern = '/(\[caption.*?\])?<img.*?src="(';
 
 			$img_urls = array();
 
@@ -66,7 +66,7 @@ if ( ! class_exists( 'Today_Migration_Duplicate_Images' ) ) {
 				}
 			}
 
-			$pattern .= implode( '|', $img_urls ) . ')"(.*)?\/?>(.*)?(<\/a>)?(\[\/caption\])?/i';
+			$pattern .= implode( '|', $img_urls ) . ')"(.*)?\/?>(.*)?(\[\/caption\])?/i';
 
 			$post_content = $post->post_content;
 
