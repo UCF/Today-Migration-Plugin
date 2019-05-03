@@ -54,7 +54,7 @@ if ( ! class_exists( 'Today_Migration_Duplicate_Images' ) ) {
 			$image = get_field( $this->acf_header_image_id, $post->ID );
 
 			// No header image, then return
-			if ( ! $image ) return;
+			if ( ! $image || ! isset( $image['sizes'] ) ) return;
 
 			$pattern = '/(\[caption.*?\])?(<a.*>)?<img.*?src="(';
 
