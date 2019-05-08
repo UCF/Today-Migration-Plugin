@@ -87,7 +87,7 @@ if ( ! class_exists( 'Today_Migration_Post_Content' ) ) {
 				$update_status = $wpdb->update( $wpdb->posts, array( 'post_content' => $post_content, 'post_date' => $updated_date_formatted ), array( 'ID' => $post->ID ) );
 
 				if ( $publish_date_formatted ) {
-					update_post_meta( $post->ID, 'post_header_publish_date', $publish_date_formatted );
+					update_field( 'field_5c813a34c81af', $publish_date_formatted, $post->ID );
 				}
 
 				if ( $update_status !== false ) {
