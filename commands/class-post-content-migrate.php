@@ -83,12 +83,12 @@ if ( ! class_exists( 'Today_Migration_Post_Content' ) ) {
 			$updated_date_formatted = ( ! empty( $updated_date ) ) ? date( 'Y-m-d H:i:s', strtotime( $updated_date ) ) : $publish_date;
 			$publish_date_formatted = date( 'Y-m-d', strtotime( $publish_date ) );
 
+			if ( $publish_date_formatted ) {
+				update_field( 'field_5c813a34c81af', $publish_date_formatted, $post->ID );
+			}
+
 			if ( $post->post_content !== $post_content || $updated_date_formatted !== $post->post_date ) {
 				$update_status = $wpdb->update( $wpdb->posts, array( 'post_content' => $post_content, 'post_date' => $updated_date_formatted ), array( 'ID' => $post->ID ) );
-
-				if ( $publish_date_formatted ) {
-					update_field( 'field_5c813a34c81af', $publish_date_formatted, $post->ID );
-				}
 
 				if ( $update_status !== false ) {
 					$this->converted++;
