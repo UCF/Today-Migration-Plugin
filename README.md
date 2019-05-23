@@ -9,17 +9,35 @@ Provides a series of wp cli tasks for manipulating data used by the old Today-Bo
 
 # Commands #
 
+* `wp today migrate externalstories`
+    * Converts `externalstories` posts to `ucf_resource_link` posts and translates meta keys.
+* `wp today migrate sources`
+    * Updates the meta key used for source images.
+* `wp today migrate content`
+    * Updates various post values including the post template used, removal of unwanted HTML tags and the addition of the `post_header_publish_date` meta.
 * `wp today migrate meta`
     * Converts post_meta keys from the ones used on the old Today site to the keys used in the new site.
 * `wp today migrate featured`
     * Copies the featured image id of each post to a custom post_meta field.
 * `wp today migrate classes`
     * Performs a simple regex search/replace using an array of CSS Classes to update old classes to ones available in Athena.
+* `wp today migrate tags`
+    * Removes all tags that have one or fewer posts assigned to them.
+* `wp today migrate duplicate-images`
+    * If a story has a featured image and contains that exact image within the content, the image in the content is removed.
 * `wp today migrate all`
-    * Runs the above three commands in sequence.
+    * Runs all the above commands in sequence.
 
 
 ## Changelog ##
+
+### 1.0.2 ###
+Enhancements:
+* Added duplicate image removal command
+* Added meta migration command
+* Added post content migration command
+* Added source migration command
+* Added tag removal command
 
 ### 1.0.1 ###
 Bug Fixes:
